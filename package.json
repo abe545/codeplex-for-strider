@@ -1,0 +1,40 @@
+{
+  "name": "codeplex-for-strider",
+  "version": "0.0.0",
+  "description": "Provides access to codeplex for strider",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abe545/codeplex-for-strider.git"
+  },
+  "keywords": [
+    "codeplex",
+    "strider"
+  ],
+  "author": {
+    "name": "Abraham Heidebrecht"
+  },
+  "license": "GPL-2.0",
+  "readmeFilename": "Readme.md",
+  "strider": {
+    "id": "codeplex",
+    "title": "Codeplex",
+    "type": "provider",
+    "hosted": true,
+    "config": {
+      "controller": "CodeplexController"
+    },
+    "accountConfig": {
+      "setupLink": "/auth/codeplex"
+    },
+    "webapp": "lib/webapp.js",
+    "worker": "lib/worker.js",
+    "inline_icon": "windows"
+  },
+  "dependencies": {
+  },
+  "bugs": {
+    "url": "https://github.com/abe545/codeplex-for-strider/issues"
+  },
+  "homepage": "https://github.com/abe545/codeplex-for-strider"
+}
