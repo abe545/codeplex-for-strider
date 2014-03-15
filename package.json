@@ -2,7 +2,6 @@
   "name": "codeplex-for-strider",
   "version": "0.0.0",
   "description": "Provides access to codeplex for strider",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/abe545/codeplex-for-strider.git"
@@ -25,13 +24,14 @@
       "controller": "CodeplexController"
     },
     "accountConfig": {
-      "setupLink": "/auth/codeplex"
+      "setupLink": "/ext/codeplex/oauth"
     },
-    "webapp": "lib/webapp.js",
-    "worker": "lib/worker.js",
+    "webapp": "webapp.js",
+    "worker": "worker.js",
     "inline_icon": "windows"
   },
   "dependencies": {
+    "passport-oauth2": "1.x.x"
   },
   "bugs": {
     "url": "https://github.com/abe545/codeplex-for-strider/issues"
