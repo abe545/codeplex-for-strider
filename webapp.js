@@ -7,6 +7,18 @@ module.exports = {
     clientId: 'feecb876f9044bca8a86ab9089fba8b0',
     clientSecret: 'efc1e8c120c24b59b12ad0f4f7d32d02'
   },
+  
+  accountConfig: {
+    accessToken: String,
+    name: String,
+    avatar: String
+  },	
+  
+  config: {
+    sourceType: String,
+	sourceUrl: String,
+	role: String
+  },
 
   // oauth global routes
   globalRoutes: function (app, context) {
@@ -19,30 +31,43 @@ module.exports = {
         res.redirect('/projects');
       });
   },
-
-  listRepos: function (account, next) {
-	codeplex.getRepos(account, function(err, data) {
-		if (err) return next(err)
-		next(null, data.map(function(repo) { return codeplex.parseRepo(account, repo); }).filter(function (repo) {
-			return repo.config.scm === 'Git' ||
-				repo.config.scm === 'Mercurial';
-	    }))
-	});
+  
+  // namespaced to /org/repo/api/codeplex/
+  routes: function (app, context) {
   },
   
-  // register the passport auth strategy
   auth: function (passport, context) {
-    var config = this.appConfig
     passport.use(new CodeplexStrategy({
       clientID: this.appConfig.clientId,
       clientSecret: this.appConfig.clientSecret,
       callbackURL: this.appConfig.hostname + '/ext/codeplex/oauth/callback',
       passReqToCallback: true
     }, validateAuth));
+  },
+
+  listRepos: function (account, callback) {
+	codeplex.getRepos(account, function(err, data) {
+		if (err) return callback(err)
+		callback(null, data.map(function(repo) { return parseRepo(account, repo); }))
+	});
+  },
+  
+  isSetup: function (account) {},
+  
+  setupRepo: function (account, config, project, done) {
+  },
+
+  teardownRepo: function (account, config, project, done) {
+  },
+  
+  getBranches: function (account, config, project, done) {
+  },
+  
+  getFile: function (filename, ref, account, config, project, done) {
   }
 }
 
-function validateAuth(req, token, tokenSecret, profile, done) {
+function validateAuth(req, accessToken, parms, profile, done) {
   if (!req.user) {
     console.warn('Codeplex OAuth but no logged-in user')
     req.flash('account', "Cannot link a codeplex account if you aren't logged in")
@@ -55,13 +80,13 @@ function validateAuth(req, token, tokenSecret, profile, done) {
     return done(null, req.user)
   }
   
-  req.user.accounts.push(makeAccount(token, tokenSecret, profile))
+  req.user.accounts.push(makeAccount(accessToken, profile))
   req.user.save(function (err) {
     done(err, req.user);
   })
 }
 
-function makeAccount(token, tokenSecret, profile) {
+function makeAccount(accessToken, profile) {
   var username = profile.UserName;
   return {
     provider: 'codeplex',
@@ -69,11 +94,24 @@ function makeAccount(token, tokenSecret, profile) {
     display_url: 'https://www.codeplex.com/site/users/view/' + username,
     title: username,
     config: {
-      accessToken: token,
-      tokenSecret: tokenSecret,
-      login: username,
+      accessToken: accessToken,
       name: username,
-      avatar: profile.Avatar,
+      avatar: profile.Avatar
     }
+  }
+}
+
+function parseRepo(account, repo) {
+  return {
+	name: account.name + '/' + repo.Name,
+	display_name: repo.Title,
+	display_url: repo.Url,
+	group: account.name,
+	'private': !repo.IsPublished,
+	config: {
+	  sourceType: repo.SourceControl.ServerType,
+      sourceUrl: repo.SourceControl.Url,
+	  role: repo.Role
+	}
   }
 }

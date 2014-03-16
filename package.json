@@ -15,21 +15,6 @@
   },
   "license": "GPL-2.0",
   "readmeFilename": "Readme.md",
-  "strider": {
-    "id": "codeplex",
-    "title": "Codeplex",
-    "type": "provider",
-    "hosted": true,
-    "config": {
-      "controller": "CodeplexController"
-    },
-    "accountConfig": {
-      "setupLink": "/ext/codeplex/oauth"
-    },
-    "webapp": "webapp.js",
-    "worker": "worker.js",
-    "inline_icon": "windows"
-  },
   "dependencies": {
     "passport-oauth2": "1.x.x"
   },
