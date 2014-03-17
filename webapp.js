@@ -16,8 +16,7 @@ module.exports = {
   
   config: {
     sourceType: String,
-	sourceUrl: String,
-	role: String
+	sourceUrl: String
   },
 
   // oauth global routes
@@ -106,12 +105,11 @@ function parseRepo(account, repo) {
 	name: account.name + '/' + repo.Name,
 	display_name: repo.Title,
 	display_url: repo.Url,
-	group: account.name,
+	group: repo.Role,
 	'private': !repo.IsPublished,
 	config: {
 	  sourceType: repo.SourceControl.ServerType,
-      sourceUrl: repo.SourceControl.Url,
-	  role: repo.Role
+      sourceUrl: repo.SourceControl.Url
 	}
   }
 }
