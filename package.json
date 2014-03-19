@@ -16,7 +16,8 @@
   "license": "GPL-2.0",
   "readmeFilename": "Readme.md",
   "dependencies": {
-    "passport-oauth2": "1.x.x"
+    "passport-oauth2": "1.x.x",
+	"refresh-token": "0.0.2"
   },
   "bugs": {
     "url": "https://github.com/abe545/codeplex-for-strider/issues"

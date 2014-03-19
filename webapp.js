@@ -10,6 +10,7 @@ module.exports = {
   
   accountConfig: {
     accessToken: String,
+	refreshToken: String,
     name: String,
     avatar: String
   },	
@@ -17,7 +18,7 @@ module.exports = {
   config: {
     sourceType: String,
 	sourceUrl: String,
-	role: String
+	repoName: String
   },
 
   // oauth global routes
@@ -41,12 +42,13 @@ module.exports = {
       clientID: this.appConfig.clientId,
       clientSecret: this.appConfig.clientSecret,
       callbackURL: this.appConfig.hostname + '/ext/codeplex/oauth/callback',
+	  scope: 'project_info',
       passReqToCallback: true
     }, validateAuth));
   },
 
   listRepos: function (account, callback) {
-	codeplex.getRepos(account, function(err, data) {
+	codeplex.getRepos(account, this.appConfig, function(err, data) {
 		if (err) return callback(err)
 		callback(null, data.map(function(repo) { return parseRepo(account, repo); }))
 	});
@@ -55,9 +57,13 @@ module.exports = {
   isSetup: function (account) {},
   
   setupRepo: function (account, config, project, done) {
+    if (!account.accessToken) return done(new Error('Codeplex account not configured'));
+    done(null, config);
   },
 
   teardownRepo: function (account, config, project, done) {
+    if (!account.accessToken) return done(new Error('Codeplex account not configured'));
+    done(null, config);
   },
   
   getBranches: function (account, config, project, done) {
@@ -67,7 +73,7 @@ module.exports = {
   }
 }
 
-function validateAuth(req, accessToken, parms, profile, done) {
+function validateAuth(req, accessToken, refreshToken, parms, profile, done) {
   if (!req.user) {
     console.warn('Codeplex OAuth but no logged-in user')
     req.flash('account', "Cannot link a codeplex account if you aren't logged in")
@@ -80,13 +86,13 @@ function validateAuth(req, accessToken, parms, profile, done) {
     return done(null, req.user)
   }
   
-  req.user.accounts.push(makeAccount(accessToken, profile))
+  req.user.accounts.push(makeAccount(accessToken, refreshToken, profile))
   req.user.save(function (err) {
     done(err, req.user);
   })
 }
 
-function makeAccount(accessToken, profile) {
+function makeAccount(accessToken, refreshToken, profile) {
   var username = profile.UserName;
   return {
     provider: 'codeplex',
@@ -95,6 +101,7 @@ function makeAccount(accessToken, profile) {
     title: username,
     config: {
       accessToken: accessToken,
+	  refreshToken: refreshToken,
       name: username,
       avatar: profile.Avatar
     }
@@ -103,15 +110,16 @@ function makeAccount(accessToken, profile) {
 
 function parseRepo(account, repo) {
   return {
+	id: account.name + '/' + repo.Name,
 	name: account.name + '/' + repo.Name,
 	display_name: repo.Title,
 	display_url: repo.Url,
-	group: account.name,
+	group: repo.Role,
 	'private': !repo.IsPublished,
 	config: {
 	  sourceType: repo.SourceControl.ServerType,
       sourceUrl: repo.SourceControl.Url,
-	  role: repo.Role
+	  repoName: repo.Name
 	}
   }
 }
