@@ -16,6 +16,7 @@
   "license": "GPL-2.0",
   "readmeFilename": "Readme.md",
   "dependencies": {
+    "git-node": "0.1.1",
     "passport-oauth2": "1.x.x",
 	"refresh-token": "0.0.2"
   },

@@ -67,6 +67,7 @@ module.exports = {
   },
   
   getBranches: function (account, config, project, done) {
+  	codeplex.getBranches(account, config, done);
   },
   
   getFile: function (filename, ref, account, config, project, done) {
