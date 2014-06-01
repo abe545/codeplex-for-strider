@@ -1,10 +1,10 @@
 {
-  "name": "codeplex-for-strider",
-  "version": "0.0.0",
+  "name": "strider-codeplex",
+  "version": "0.0.2",
   "description": "Provides access to codeplex for strider",
   "repository": {
     "type": "git",
-    "url": "https://github.com/abe545/codeplex-for-strider.git"
+    "url": "https://github.com/abe545/strider-codeplex.git"
   },
   "keywords": [
     "codeplex",
@@ -16,12 +16,29 @@
   "license": "GPL-2.0",
   "readmeFilename": "Readme.md",
   "dependencies": {
-    "git-node": "0.1.1",
-    "passport-oauth2": "1.x.x",
-	"refresh-token": "0.0.2"
+    "git-node": "~0.1.1",
+	"hg": "~0.0.6",
+    "passport-oauth2": "~1.1.2",
+	"refresh-token": "~0.0.2",
+    "strider-git": "~0.2.0"
   },
   "bugs": {
-    "url": "https://github.com/abe545/codeplex-for-strider/issues"
+    "url": "https://github.com/abe545/strider-codeplex/issues"
   },
-  "homepage": "https://github.com/abe545/codeplex-for-strider"
+  "homepage": "https://github.com/abe545/strider-codeplex",
+  "strider": {
+    "id": "codeplex",
+    "title": "Codeplex",
+    "type": "provider",
+    "hosted": true,
+    "config": {
+      "controller": "CodeplexController"
+    },
+    "accountConfig": {
+      "setupLink": "/ext/codeplex/oauth"
+    },
+    "webapp": "webapp.js",
+    "worker": "worker.js",
+    "inline_icon": "windows"
+  }
 }

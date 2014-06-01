@@ -16,9 +16,10 @@ module.exports = {
   },	
   
   config: {
-    sourceType: String,
-	sourceUrl: String,
-	repoName: String
+    type: String,
+    url: String,
+    repo: String,
+    auth: {}
   },
 
   // oauth global routes
@@ -54,7 +55,9 @@ module.exports = {
 	});
   },
   
-  isSetup: function (account) {},
+  isSetup: function (account) {
+    return account.accessToken;
+  },
   
   setupRepo: function (account, config, project, done) {
     if (!account.accessToken) return done(new Error('Codeplex account not configured'));
@@ -69,9 +72,12 @@ module.exports = {
   getBranches: function (account, config, project, done) {
   	codeplex.getBranches(account, config, done);
   },
-  
+ 
+  // native git, hg, and codeplex all don't have a great way to just get a single file at an arbitrary revision
+  fastFile: false, 
   getFile: function (filename, ref, account, config, project, done) {
-  }
+    done(new Error('not implemented'));
+  },
 }
 
 function validateAuth(req, accessToken, refreshToken, parms, profile, done) {
@@ -118,9 +124,12 @@ function parseRepo(account, repo) {
 	group: repo.Role,
 	'private': !repo.IsPublished,
 	config: {
-	  sourceType: repo.SourceControl.ServerType,
-      sourceUrl: repo.SourceControl.Url,
-	  repoName: repo.Name
+      type: repo.SourceControl.ServerType.toLowerCase(),
+      url: repo.SourceControl.Url,
+      repo: repo.Name,
+      auth: {
+        type: 'https'
+      }
 	}
   }
 }
