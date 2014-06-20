@@ -20,6 +20,7 @@
 	"hg": "~0.0.6",
     "passport-oauth2": "~1.1.2",
 	"refresh-token": "~0.0.2",
+	"request": "~2.36.0",
     "strider-git": "~0.2.0"
   },
   "bugs": {
